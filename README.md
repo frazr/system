@@ -4,6 +4,9 @@ This is a Dockerfile to build a container image for nginx, php-fpm & mysql, with
 ## Installing
 docker build -t oas/helpav1 github.com/frazr/system
 
+## Running
+
+
 ### Git repository
 The source files for this project can be found here: [https://github.com/ngineered/nginx-php-fpm](https://github.com/ngineered/nginx-php-fpm)
 
