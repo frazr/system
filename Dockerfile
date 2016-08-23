@@ -60,6 +60,9 @@ RUN echo http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repositories 
 
 RUN apk add --no-cache mysql mysql-client pwgen logrotate
 
+# Editor
+RUN apk add vim
+
 # Copy our nginx config
 RUN rm -Rf /etc/nginx/nginx.conf
 ADD conf/nginx/nginx.conf /etc/nginx/nginx.conf
