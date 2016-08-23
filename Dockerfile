@@ -148,4 +148,5 @@ RUN chmod 755 /usr/bin/new && \
 EXPOSE 443 80
 
 #CMD ["/usr/bin/supervisord", "-n", "-c",  "/etc/supervisord.conf"]
+RUN chmod +x /start.sh
 CMD ["/start.sh"]
