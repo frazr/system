@@ -67,21 +67,21 @@ RUN apk add vim
 RUN rm -Rf /etc/nginx/nginx.conf
 ADD conf/nginx/nginx.conf /etc/nginx/nginx.conf
 ADD conf/nginx/restrictions /etc/nginx/restrictions
+ADD conf/nginx/sites-enabled/default.conf /etc/nginx/sites-enabled/default.conf
 
-# nginx site conf
+# Nginx
 RUN mkdir -p /etc/nginx/sites-available/ && \
 mkdir -p /etc/nginx/sites-enabled/ && \
 mkdir -p /etc/nginx/ssl/ && \
-rm -Rf /var/www/* && \
-mkdir /var/www/html/
+rm -Rf /var/www && \
+mkdir -p /data/www_root
+
 ADD conf/nginx/nginx-site.conf /etc/nginx/sites-available/default.conf
 ADD conf/nginx/nginx-site-ssl.conf /etc/nginx/sites-available/default-ssl.conf
 ADD conf/php-fpm.conf /etc/php7/php-fpm.conf
-RUN ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default.conf
-
 ADD conf/my.cnf /etc/mysql/my.cnf
 
-# tweak php-fpm config
+# Php-fpm 
 RUN sed -i -e "s/;cgi.fix_pathinfo=1/cgi.fix_pathinfo=0/g" ${php_conf} && \
 sed -i -e "s/upload_max_filesize\s*=\s*2M/upload_max_filesize = 100M/g" ${php_conf} && \
 sed -i -e "s/post_max_size\s*=\s*8M/post_max_size = 100M/g" ${php_conf} && \
@@ -132,10 +132,8 @@ RUN mkdir /var/run/mysql && \
     chown -R mysql. /var/run/mysql && \
     chmod 766 /var/run/mysql/mysqld.pid
 
-# copy in code
-ADD src/ /var/www/html/
-ADD errors/ /var/www/errors
-
+# Copy in code
+ADD src/ /data/www_root/
 
 ADD conf/supervisord.conf /etc/supervisord.conf
 ADD scripts/start.sh /start.sh
@@ -144,9 +142,6 @@ ADD scripts/new /usr/bin/new
 RUN chmod 755 /usr/bin/new && \
     chmod 755 /start.sh
     
-
 EXPOSE 443 80
 
-#CMD ["/usr/bin/supervisord", "-n", "-c",  "/etc/supervisord.conf"]
-RUN chmod +x /start.sh
 CMD ["/start.sh"]

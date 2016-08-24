@@ -1,1 +1,2 @@
-docker build -t oas/helpav1 .
+#!/bin/bash
+docker build -t $1/v1 .

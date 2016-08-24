@@ -11,13 +11,7 @@ if [ ! -z "$SSH_KEY" ]; then
  chmod 600 /root/.ssh/id_rsa
 fi
 
-# Set custom webroot
-if [ ! -z "$WEBROOT" ]; then
- webroot=$WEBROOT
- sed -i "s#root /var/www/html;#root ${webroot};#g" /etc/nginx/sites-available/default.conf
-else
- webroot=/var/www/html
-fi
+webroot=/data/www_root
 
 # Setup git variables
 if [ ! -z "$GIT_EMAIL" ]; then
@@ -81,7 +75,7 @@ if [ ! -z "$PHP_UPLOAD_MAX_FILESIZE" ]; then
 fi
 
 # Always chown webroot for better mounting
-chown -Rf nginx.nginx /var/www/html
+chown -Rf nginx.nginx /data/www_root
 
 # Run custom scripts
 if [[ "$RUN_SCRIPTS" == "1" ]] ; then
@@ -98,11 +92,8 @@ fi
 if [ ! -d "/data/etc" ]; then
 
   mkdir -p /data/
-  mkdir /data/sites
-  mkdir /data/logs
-  mkdir /data/php-fpm.d
-  mkdir /data/nginx.d
-  mkdir /data/etc
+  mkdir /data/home
+	mkdir /data/etc
 
   mv /etc/passwd /data/etc/passwd
   mv /etc/shadow /data/etc/shadow
@@ -111,7 +102,13 @@ if [ ! -d "/data/etc" ]; then
   ln -s /data/etc/shadow /etc/shadow
   ln -s /data/etc/group /etc/group
 
-  touch /data/etc/hosts
+  touch /data/etc/hosts && \
+	mkdir -p /data/logs && \
+  touch /data/logs/access_log && \
+  touch /data/logs/error_log && \
+  chown nginx:nginx /data/logs/access_log && \
+  chown nginx:nginx /data/logs/error_log && \
+	chmod 755 /data/logs && chmod 644 /data/logs/*
 
   mysql_install_db \
         --user=mysql \
