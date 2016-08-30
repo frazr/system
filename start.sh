@@ -1,2 +1,2 @@
 #!/bin/bash
-docker run -p80:80 -p222:22 test/v1
+docker run --name helpa -p 80:80 -p 222:22 -v helpavol:/data -v /home/nik/helpa/:/data/www_root oas/helpav1

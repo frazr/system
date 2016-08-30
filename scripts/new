@@ -39,8 +39,10 @@ if [ ! -f /data/mysql/root_password ]; then
     chmod 400 /data/mysql/root_password
 fi
 
+testdatabase=$username"_test"
+
 echo "CREATE DATABASE $username; CREATE USER '$username'@'localhost' IDENTIFIED BY '$pass'; GRANT ALL PRIVILEGES ON $username.* TO '$username'@'localhost' ; FLUSH PRIVILEGES;" | mysql -u root --password=$(cat /data/mysql/root_password)
-echo "CREATE DATABASE $username\_test; GRANT ALL PRIVILEGES ON $username\_test.* TO '$username'@'localhost' ; FLUSH PRIVILEGES;" | mysql -u root --password=$(cat /data/mysql/root_password)
+echo "CREATE DATABASE $testdatabase; GRANT ALL PRIVILEGES ON $testdatabase.* TO '$username'@'localhost' ; FLUSH PRIVILEGES;" | mysql -u root --password=$(cat /data/mysql/root_password)
 
 supervisorctl restart php-fpm7
 supervisorctl restart nginx
